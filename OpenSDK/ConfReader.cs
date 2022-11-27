@@ -1,4 +1,7 @@
-﻿namespace OpenSDK
+﻿using System;
+using System.IO;
+
+namespace OpenSDK
 {
     public class ConfReader<T>
     {
