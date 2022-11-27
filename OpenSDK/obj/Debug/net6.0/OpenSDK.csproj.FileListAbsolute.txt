@@ -1,0 +1,12 @@
+/home/ericplegarrison/RiderProjects/OpenSDK/OpenSDK/bin/Debug/net6.0/OpenSDK.deps.json
+/home/ericplegarrison/RiderProjects/OpenSDK/OpenSDK/bin/Debug/net6.0/OpenSDK.dll
+/home/ericplegarrison/RiderProjects/OpenSDK/OpenSDK/bin/Debug/net6.0/ref/OpenSDK.dll
+/home/ericplegarrison/RiderProjects/OpenSDK/OpenSDK/bin/Debug/net6.0/OpenSDK.pdb
+/home/ericplegarrison/RiderProjects/OpenSDK/OpenSDK/obj/Debug/net6.0/OpenSDK.csproj.AssemblyReference.cache
+/home/ericplegarrison/RiderProjects/OpenSDK/OpenSDK/obj/Debug/net6.0/OpenSDK.GeneratedMSBuildEditorConfig.editorconfig
+/home/ericplegarrison/RiderProjects/OpenSDK/OpenSDK/obj/Debug/net6.0/OpenSDK.AssemblyInfoInputs.cache
+/home/ericplegarrison/RiderProjects/OpenSDK/OpenSDK/obj/Debug/net6.0/OpenSDK.AssemblyInfo.cs
+/home/ericplegarrison/RiderProjects/OpenSDK/OpenSDK/obj/Debug/net6.0/OpenSDK.csproj.CoreCompileInputs.cache
+/home/ericplegarrison/RiderProjects/OpenSDK/OpenSDK/obj/Debug/net6.0/OpenSDK.dll
+/home/ericplegarrison/RiderProjects/OpenSDK/OpenSDK/obj/Debug/net6.0/ref/OpenSDK.dll
+/home/ericplegarrison/RiderProjects/OpenSDK/OpenSDK/obj/Debug/net6.0/OpenSDK.pdb
