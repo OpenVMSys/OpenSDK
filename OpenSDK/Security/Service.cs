@@ -40,7 +40,7 @@ public class Service
      * 核验请求的key是否有效
      * 若key存在且要求permission小于key的permission，则通过
      */
-    public bool Auth(string authKey, OMSConfiguration.SecurityPermission permission)
+    public bool Auth(string authKey, OmsConfiguration.SecurityPermission permission)
     {
         Get();
         foreach (var key in KeyCollection)

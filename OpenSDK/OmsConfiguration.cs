@@ -1,8 +1,6 @@
-using System;
-
 namespace OpenSDK
 {
-    public class OMSConfiguration
+    public class OmsConfiguration
     {
         public static string SiteName = "";
         public static string SiteUrl = "";
@@ -48,8 +46,9 @@ namespace OpenSDK
         //Report Status
         public enum ReportStatus
         {
-            Approved,
-            Decliend
+            Accepted,
+            Declined,
+            Pending
         }
     }
 }
