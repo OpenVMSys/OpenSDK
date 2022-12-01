@@ -62,7 +62,7 @@ namespace OpenSDK
             }
             catch (Exception e)
             {
-                PluginOutput.PrintError("ERROR IN CALLING PLUGIN: ", plugin, " ON CHANNEL ", on, "\n", e.Message);
+                Logger.Error("OpenSDK","ERROR IN CALLING PLUGIN:", plugin, "ON CHANNEL", on, "\n", e.Message);
                 return null;
             }
 

@@ -1,8 +1,8 @@
 namespace OpenSDK
 {
-    public class PluginManager
+    public static class PluginManager
     {
-        public OpenPluginCore PluginCore = new();
+        public static OpenPluginCore PluginCore = new();
         private static List<PluginConfig> GetConfig()
         {
             var pluginConfigList = new List<PluginConfig>();
@@ -17,18 +17,12 @@ namespace OpenSDK
                 configStream.Close();
                 //在这里要完成后续的插件config格式化读取
                 var pluginConfigs = rawConfig.Split("\n");
-                foreach (var pluginConfig in pluginConfigs)
-                {
-                    if (pluginConfig.Split("\t").Length > 1)
-                    {
-                        pluginConfigList.Add(new PluginConfig(pluginConfig.Split("\t")[0], pluginConfig.Split("\t")[1] == "True"));
-                    }
-                }
+                pluginConfigList.AddRange(from pluginConfig in pluginConfigs where pluginConfig.Split("\t").Length > 1 select new PluginConfig(pluginConfig.Split("\t")[0], pluginConfig.Split("\t")[1] == "True"));
                 return pluginConfigList;
             }
             catch (Exception e)
             {
-                PluginOutput.PrintError("Plugin load error: " + e.Message);
+                Logger.Error("OpenSDK","Plugin load error:", e.Message);
                 try
                 {
                     var configStream = new FileStream(Path.Join("pluginConfig"), FileMode.OpenOrCreate);
@@ -42,22 +36,15 @@ namespace OpenSDK
                 }
                 catch
                 {
-                    PluginOutput.PrintError("Plugin Initialize Fail, please check your environment. Now exiting...");
+                    Logger.Error("OpenSDK","Plugin Initialize Fail, please check your environment. Now exiting...");
                     Environment.Exit(203);
                 }
                 return pluginConfigList;
             }
         }
-        private static bool IsEnabled(List<PluginConfig> configs, string pluginName)
+        private static bool IsEnabled(IEnumerable<PluginConfig> configs, string pluginName)
         {
-            foreach (var config in configs)
-            {
-                if (config.PluginName == pluginName && config.IsEnabled)
-                {
-                    return true;
-                }
-            }
-            return false;
+            return configs.Any(config => config.PluginName == pluginName && config.IsEnabled);
         }
         public static bool IsEnabled(string pluginName)
         {
@@ -67,11 +54,7 @@ namespace OpenSDK
         {
             var nowConfigs = GetConfig();
             var newerPlugins = OpenPluginCore.LoadAllPlugins();
-            var nowList = new List<string>();
-            foreach (var nowConfig in nowConfigs)
-            {
-                nowList.Add(nowConfig.PluginName);
-            }
+            var nowList = nowConfigs.Select(nowConfig => nowConfig.PluginName).ToList();
             foreach (var newerPlugin in newerPlugins)
             {
                 if (!nowList.Contains(newerPlugin.GetType().Name))
@@ -92,22 +75,22 @@ namespace OpenSDK
             }
             catch (Exception ex)
             {
-                PluginOutput.PrintError("Plugin config set error: " + ex.Message);
+                Logger.Error("OpenSDK","Plugin config set error:", ex.Message);
             }
         }
-        public void TogglePlugin(string pluginName)
+        public static void TogglePlugin(string pluginName)
         {
             var configList = GetConfig();
             var beforeToggle = IsEnabled(pluginName);
             var plugin = configList.Find((config) => config.PluginName.Equals(pluginName));
             if (plugin == null)
             {
-                PluginOutput.PrintError("Plugin: " + pluginName + " does not exist");
+                Logger.Error("OpenSDK", "Plugin:", pluginName, "does not exist");
                 return;
             }
             configList.Remove(plugin);
             configList.Add(new PluginConfig(pluginName, !beforeToggle));
-            PluginOutput.PrintResult("Plugin: " + pluginName + (beforeToggle ? " dis" : " en") + "abled");
+            Logger.Result("OpenSDK","Plugin:",pluginName,"is now",beforeToggle ? " dis" : " en","abled");
             File.Delete(Path.Join("pluginConfig"));
             foreach (var config in configList)
             {

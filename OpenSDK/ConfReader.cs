@@ -16,7 +16,6 @@
                 {
                     foreach (var data in lineData)
                     {
-                        if (data[0] == '#') { continue; }
                         var splitData = data.Split('=');
                         if (splitData.Length != 2) { continue; }
                         var key = splitData[0];
@@ -28,17 +27,19 @@
                         }
                         catch(Exception ex)
                         {
-                            Console.WriteLine(ex.Message);
+                            Console.WriteLine("ConfReader Error: {0}",ex.Message);
+                            Logger.Error("OpenSDK","Configuration file read error:",ex.Message);
                         }
                     }
                 }
-                return targetObj;
             }
             catch(Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Logger.Error("OpenSDK","Configuration file read error:",ex.Message);
                 return targetObj;
             }
+
+            return targetObj;
         }
     }
 }

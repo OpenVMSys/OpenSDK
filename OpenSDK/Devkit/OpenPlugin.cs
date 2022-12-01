@@ -4,14 +4,13 @@ namespace OpenSDK.DevKit;
 
 public abstract class OpenPlugin
 {
-    protected Version? PluginVersion;
+    private Version? PluginVersion { get; set; }
 
-    protected Version? Version => PluginVersion;
     public abstract object OnServiceStart();
     public abstract object OnServiceStop();
     public object? OnVersionGet()
     {
-        return Version;
+        return PluginVersion;
     }
 }
 
@@ -37,9 +36,9 @@ public interface IPut
 }
 public class ServiceBase
 {
-    protected static MongoClient DataClient=new();
-    protected static IMongoDatabase Database=DataClient.GetDatabase("");
-    protected static IMongoCollection<BsonDocument> Collection=Database.GetCollection<BsonDocument>("");
+    protected static MongoClient DataClient { get; set; }
+    private static IMongoDatabase Database { get; set; }
+    protected static IMongoCollection<BsonDocument> Collection { get; set; }
 
     /**
          * Get All Objects
@@ -79,6 +78,13 @@ public class ServiceBase
     public static object? CallMessage(string channel, string plugin, params object[] data)
     {
         return OpenPluginCore.PluginMessageTransport(channel, plugin, data);
+    }
+    
+    public long Transfer(string identifier, string target)
+    {
+        return Collection.UpdateOne(
+            Builders<BsonDocument>.Filter.Eq("Identifier", identifier),
+            Builders<BsonDocument>.Update.Set("Belonging", target)).ModifiedCount;
     }
 }
 

@@ -1,6 +1,6 @@
 namespace OpenSDK
 {
-    public class OmsConfiguration
+    public static class OmsConfiguration
     {
         public static string SiteName = "";
         public static string SiteUrl = "";
