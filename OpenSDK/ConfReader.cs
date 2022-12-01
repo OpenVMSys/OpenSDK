@@ -27,7 +27,6 @@
                         }
                         catch(Exception ex)
                         {
-                            Console.WriteLine("ConfReader Error: {0}",ex.Message);
                             Logger.Error("OpenSDK","Configuration file read error:",ex.Message);
                         }
                     }

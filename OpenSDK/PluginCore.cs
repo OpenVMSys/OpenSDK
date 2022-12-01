@@ -32,13 +32,13 @@ namespace OpenSDK
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine("Plugins load error: \n{0}", ex.Message);
+                        Logger.Error("OpenSDK", "Plugin load error", ex.Message);
                     }
                 }
             }
             catch
             {
-                Console.WriteLine("Notice: There's No Plugin in your /plugin Directory");
+                Logger.Info("OpenSDK","There's no plugin in your plugin directory");
             }
             return allPlugins;
         }
