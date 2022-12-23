@@ -1,6 +1,8 @@
+using System.Reflection;
+
 namespace OpenSDK
 {
-    public static class PluginManager
+    public class PluginManager
     {
         public static OpenPluginCore PluginCore = new();
         private static List<PluginConfig> GetConfig()
@@ -22,7 +24,7 @@ namespace OpenSDK
             }
             catch (Exception e)
             {
-                Logger.Error("OpenSDK","Plugin load error:", e.Message);
+                Logger<PluginManager>.Error("Plugin load error:", e.Message);
                 try
                 {
                     var configStream = new FileStream(Path.Join("pluginConfig"), FileMode.OpenOrCreate);
@@ -36,7 +38,7 @@ namespace OpenSDK
                 }
                 catch
                 {
-                    Logger.Error("OpenSDK","Plugin Initialize Fail, please check your environment. Now exiting...");
+                    Logger<PluginManager>.Error("Plugin Initialize Fail, please check your environment. Now exiting...");
                     Environment.Exit(203);
                 }
                 return pluginConfigList;
@@ -75,7 +77,7 @@ namespace OpenSDK
             }
             catch (Exception ex)
             {
-                Logger.Error("OpenSDK","Plugin config set error:", ex.Message);
+                Logger<PluginManager>.Error("Plugin config set error:", ex.Message);
             }
         }
         public static void TogglePlugin(string pluginName)
@@ -85,17 +87,63 @@ namespace OpenSDK
             var plugin = configList.Find((config) => config.PluginName.Equals(pluginName));
             if (plugin == null)
             {
-                Logger.Error("OpenSDK", "Plugin:", pluginName, "does not exist");
+                Logger<PluginManager>.Error("Plugin:", pluginName, "does not exist");
                 return;
             }
             configList.Remove(plugin);
             configList.Add(new PluginConfig(pluginName, !beforeToggle));
-            Logger.Result("OpenSDK","Plugin:",pluginName,"is now",beforeToggle ? " dis" : " en","abled");
+            Logger<PluginManager>.Result("Plugin:",pluginName,"is now",beforeToggle ? "disabled" : "enabled");
             File.Delete(Path.Join("pluginConfig"));
             foreach (var config in configList)
             {
                 WriteConfig(config.PluginName, config.IsEnabled);
             }
+        }
+
+        public static void ListPlugins()
+        {
+            var plugins = Directory.GetFiles(Path.Join("plugins"));
+            foreach (var plugin in plugins)
+            {
+                if (!plugin.ToUpper().EndsWith(".DLL"))
+                {
+                    continue;
+                }
+
+                try
+                {
+                    var plugin2List = Assembly.LoadFrom(plugin);
+                    var types = plugin2List.GetTypes();
+                    foreach (var type in types)
+                    {
+                        if (type.GetInterface("IOpenPlugin") ==null || type.FullName==null)
+                        {
+                            continue;
+                        }
+                        Console.Write("{0}\t{1}\t",type.FullName,IsEnabled(type.Name));
+                        if (!IsOfficial(type))
+                        {
+                            Console.Write("\n");
+                        }
+                        else
+                        {
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.Write("Official");
+                            Console.ResetColor();
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Logger<PluginManager>.Error(e.Message);
+                }
+            }
+        }
+
+        private static bool IsOfficial(Type t)
+        {
+            var result = t.GetInterface("IOpenOfficialPlugin");
+            return result != null;
         }
     }
 }

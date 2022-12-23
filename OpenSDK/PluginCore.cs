@@ -20,25 +20,27 @@ namespace OpenSDK
                     }
                     try
                     {
-                        var loadPlugin = Assembly.LoadFrom(fileName);
-                        var types = loadPlugin.GetTypes();
+                        var plugin2Load = Assembly.LoadFrom(fileName);
+                        var types = plugin2Load.GetTypes();
                         foreach (var type in types)
                         {
-                            if (type.GetInterface("IOpenVMSysPlugin") != null && type.FullName != null)
+                            if (type.GetInterface("IOpenPlugin") == null)
                             {
-                                allPlugins.Add(loadPlugin.CreateInstance(type.FullName));
+                                continue;
                             }
+                            allPlugins.Add(plugin2Load.CreateInstance(type.Name));
+                            Logger<OpenPluginCore>.Info("Loading", type.Name);
                         }
                     }
                     catch (Exception ex)
                     {
-                        Logger.Error("OpenSDK", "Plugin load error", ex.Message);
+                        Logger<OpenPluginCore>.Error("Plugin load error", ex.Message);
                     }
                 }
             }
             catch
             {
-                Logger.Info("OpenSDK","There's no plugin in your plugin directory");
+                Logger<OpenPluginCore>.Info("There's no plugin in your plugin directory");
             }
             return allPlugins;
         }
@@ -62,7 +64,7 @@ namespace OpenSDK
             }
             catch (Exception e)
             {
-                Logger.Error("OpenSDK","ERROR IN CALLING PLUGIN:", plugin, "ON CHANNEL", on, "\n", e.Message);
+                Logger<OpenPluginCore>.Error("ERROR IN CALLING PLUGIN:", plugin, "ON CHANNEL", on, "\n", e.Message);
                 return null;
             }
 
